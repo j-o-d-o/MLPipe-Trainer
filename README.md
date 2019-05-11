@@ -1,35 +1,39 @@
 # MLPipe-Trainer
 
-Manage your Data Pipline and Tensorflow & Keras models with MLPipe. It is NOT another "wrapper" around Tensorflow, but rather adds utilities to setup an environment to control data flow and managed trained models (weights & results) with the help of Conda and MongoDB.</br>
+Manage your Data Pipline and Tensorflow & Keras models with MLPipe. It is NOT another "wrapper" around Tensorflow, but rather adds utilities to setup an environment to control data flow and managed trained models (weights & results) with the help of MongoDB.</br>
+
+```
+>> pip install mlpipe-trainer
+# or using conda
+>> conda install -c anaconda mlpipe-trainer
+```
 
 Table of Contents:
-1. [ Application Setup ](#app_setup)
-    1) [ Install Conda ](#conda)
-    2) [ Install MongoDB ](#mongodb)
+1. [ Setup ](#setup)
+    1) [ Install MongoDB ](#mongodb)
+    2) [ Install Conda (optional)](#conda)
     3) [ Setup PyCharm (optional) ](#pycharm)
     5) [ Getting Started ](#getting_started)
 2. [ Road Map ](#road_map)
 
-<a name="app_setup"></a>
-## Application Setup
-In case you create a new project, copy the __environment.yml__ into your new folder and you are ready to go. If you want to use an existing tensorflow (v2) project, you will need to copy the dependencies from the this environment file to yours.
-
-<a name="conda"></a>
-### Install Conda
-You can either install Anaconda or Miniconda (https://conda.io/miniconda.html). It is used for package and environment management. The __environment.yml__ file is specifying all the packages needed. For a new project, copy the file from this repo.</br>
-During installation, check the box to add `conda` to your PATH in the .bashrc file or do it manually afterwards.
-```bash
->> conda env create -f environment.yml
-
-# And in case you need to update the environment later on
->> conda env update -f environment.yml
-```
-This will create a conda environment and install all the needed packages (as described in environment.yml).
+<a name="setup"></a>
+## Setup
 
 <a name="mongodb"></a>
 ### Install MongoDB
 MongoDB database is used to store trained Models including their weights and results. Additionally there is also a data reader for MongoDB implemented (basically just a generator as you know and love from using keras). Currenlty that is the only implemented data reader working "out of the box".</br>
 Follow the instructions on the MongoDB website for installation e.g. for Linux: https://docs.mongodb.com/manual/administration/install-on-linux/
+
+<a name="conda"></a>
+### Install Conda
+You can either install Anaconda or Miniconda (https://conda.io/miniconda.html). It is used for package and environment management. The __environment.yml__ file is specifying all the packages needed.</br>
+During installation, check the box to add `conda` to your PATH in the .bashrc file or do it manually afterwards.
+```bash
+>> conda env create -f environment.yml
+# And in case you need to update the environment later on
+>> conda env update -f environment.yml
+```
+This will create a conda environment and install all the needed packages (as described in environment.yml).
 
 <a name="pycharm"></a>
 ### Install PyCharm (optional)
@@ -43,8 +47,6 @@ After the conda environment is set up, it can be added to the pycharm. Follow:
 
 Now pycharm will use this conda environment and can access all installed dependencies while developing MLPipe-Trainer with PyCharm.
 
-
-
 <a name="getting_started"></a>
 ### Getting Started
 Export the MLPipe-Trainer root to the python path either with (can also be added to .bashrc):
@@ -56,11 +58,10 @@ To activate the conda environment call:
 ```bash
 conda activate mlpipe_env
 ```
-For an example you can check out the Cifar-10 example in the examples folder
+For an example you can check out the Cifar-10 example in the examples folder (https://github.com/j-o-d-o/MLPipe-Trainer/tree/master/examples/cifar10)
 
 <a name="road_map"></a>
 ## Road Map
 - Create and generat MkDocs documentation & host documentation
 - Add tests
 - Redis cache in case data is fetched from remote source
-- Better dependency handling...
