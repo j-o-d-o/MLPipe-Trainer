@@ -19,9 +19,6 @@ Table of Contents:
 You can either install Anaconda or Miniconda (https://conda.io/miniconda.html). It is used for package and environment management. The __environment.yml__ file is specifying all the packages needed.</br>
 During installation, check the box to add `conda` to your PATH in the .bashrc file or do it manually afterwards.
 ```bash
-# setup the conda environment either with
->> setup.sh
-# or manually with the conda commands
 >> conda env create -f environment.yml
 ```
 This will create a conda environment and install all the needed packages (as described in environment.yml).
