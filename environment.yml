@@ -1,0 +1,16 @@
+name: mlpipe_env
+dependencies:
+  - python=3.6
+  - numpy
+  - pymongo
+  - hdf5
+  - h5py
+  - pillow
+  - pytest
+  - numba
+  - redis
+  - pip:
+    - namedlist
+    - tensorflow==2.0.0-alpha0
+    - opencv-python
+    - mkdocs

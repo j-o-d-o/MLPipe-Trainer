@@ -1,0 +1,13 @@
+; Connections to databases
+[localhost_mongo_db]
+db_type=MongoDB
+url=localhost
+port=27017
+#user=read_write
+#pwd=rw
+
+
+; API Configs
+[api_manager]
+url=http://localhost/api/v1/
+job_token=

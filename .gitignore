@@ -1,0 +1,15 @@
+__pycache__/
+
+.idea
+.vscode
+.cache
+
+/dist
+/mlpipe.egg-info
+
+**/config.ini
+**/connections.ini
+
+**/*.log
+
+dump.rdb

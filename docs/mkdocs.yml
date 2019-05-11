@@ -1,0 +1,6 @@
+site_name: MLPipe - Trainer
+theme: readthedocs
+docs_dir: templates
+nav:
+  - Home: index.md
+  - About: about.md
