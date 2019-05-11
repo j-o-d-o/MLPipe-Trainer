@@ -4,8 +4,6 @@ Manage your Data Pipline and Tensorflow & Keras models with MLPipe. It is NOT an
 
 ```
 >> pip install mlpipe-trainer
-# or using conda
->> conda install -c anaconda mlpipe-trainer
 ```
 
 Table of Contents:
