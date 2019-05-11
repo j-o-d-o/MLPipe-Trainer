@@ -1,7 +1,6 @@
 # MLPipe-Trainer
 
-Manage your Data Pipline and Tensorflow & Keras models with MLPipe. It is NOT another "wrapper" around Tensorflow, but rather adds utilities to setup an environment to control data flow and managed trained models (weights & results).</br>
-To get started, check out this repository and follow the Application Setup described below.
+Manage your Data Pipline and Tensorflow & Keras models with MLPipe. It is NOT another "wrapper" around Tensorflow, but rather adds utilities to setup an environment to control data flow and managed trained models (weights & results) with the help of Conda and MongoDB.</br>
 
 Table of Contents:
 1. [ Application Setup ](#app_setup)
@@ -13,10 +12,11 @@ Table of Contents:
 
 <a name="app_setup"></a>
 ## Application Setup
+In case you create a new project, copy the __environment.yml__ into your new folder and you are ready to go. If you want to use an existing tensorflow (v2) project, you will need to copy the dependencies from the this environment file to yours.
 
 <a name="conda"></a>
 ### Install Conda
-You can either install Anaconda or Miniconda (https://conda.io/miniconda.html). It is used for package and environment management. The __environment.yml__ file is specifying all the packages needed.</br>
+You can either install Anaconda or Miniconda (https://conda.io/miniconda.html). It is used for package and environment management. The __environment.yml__ file is specifying all the packages needed. For a new project, copy the file from this repo.</br>
 During installation, check the box to add `conda` to your PATH in the .bashrc file or do it manually afterwards.
 ```bash
 >> conda env create -f environment.yml
@@ -60,6 +60,7 @@ For an example you can check out the Cifar-10 example in the examples folder
 
 <a name="road_map"></a>
 ## Road Map
-- Create and generat MkDocs documentation
+- Create and generat MkDocs documentation & host documentation
 - Add tests
-- Create CLI for the project
+- Redis cache in case data is fetched from remote source
+- Better dependency handling...
