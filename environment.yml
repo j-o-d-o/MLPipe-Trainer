@@ -10,6 +10,7 @@ dependencies:
   - numba
   - redis
   - pip:
+    - mlpipe
     - namedlist
     - tensorflow==2.0.0-alpha0
     - opencv-python

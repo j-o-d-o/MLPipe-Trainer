@@ -1,15 +1,15 @@
-__pycache__/
-
+__pycache__
 .idea
 .vscode
 .cache
-
-/dist
-/mlpipe.egg-info
-
-**/config.ini
-**/connections.ini
-
+build/*
+dist/*
+MLPipe.egg-info
+**/*/config.ini
 **/*.log
-
 dump.rdb
+
+# tests
+.coverage
+.cache
+.pytest_cache

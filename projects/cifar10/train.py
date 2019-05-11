@@ -3,7 +3,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras import optimizers
 from mlpipe.data_reader.mongodb import load_ids, MongoDBGenerator
 from mlpipe.utils import MLPipeLogger, Config
-from mlpipe.callbacks import SaveToMongoDB, UpdateManager
+from mlpipe.callbacks import SaveToMongoDB
 from projects.cifar10.processor import PreProcessData
 
 

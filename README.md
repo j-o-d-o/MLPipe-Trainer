@@ -20,6 +20,9 @@ You can either install Anaconda or Miniconda (https://conda.io/miniconda.html). 
 During installation, check the box to add `conda` to your PATH in the .bashrc file or do it manually afterwards.
 ```bash
 >> conda env create -f environment.yml
+
+# And in case you need to update the environment later on
+>> conda env update -f environment.yml
 ```
 This will create a conda environment and install all the needed packages (as described in environment.yml).
 
@@ -51,7 +54,7 @@ Export the MLPipe-Trainer root to the python path either with (can also be added
 ```
 To activate the conda environment call:
 ```bash
-source activate mlpipe_env
+conda activate mlpipe_env
 ```
 For an example you can check out the Cifar-10 example in the project folder
 
