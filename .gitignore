@@ -4,7 +4,7 @@ __pycache__
 .cache
 build/*
 dist/*
-MLPipe.egg-info
+mlpipe_trainer.egg-info
 **/*/config.ini
 **/*.log
 dump.rdb

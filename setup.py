@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name='MLPipe',  
+    name='mlpipe-trainer',
     version='0.1.0',
     author="Johannes Dobler",
     author_email="jdobler@protonmail.com",
