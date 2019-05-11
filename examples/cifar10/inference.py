@@ -7,7 +7,7 @@ import sys
 import cv2
 
 from mlpipe.data_reader.mongodb import MongoDBConnect
-from projects.cifar10.processor import PreProcessData
+from examples.cifar10.processor import PreProcessData
 from mlpipe.utils import Config
 
 LABELS = [
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 2:
         INDEX = int(sys.argv[2])
 
-    Config.add_config('./projects/cifar10/config.ini')
+    Config.add_config('./examples/cifar10/config.ini')
     mongo_con = MongoDBConnect()
     mongo_con.add_connections_from_config(Config.get_config_parser())
 

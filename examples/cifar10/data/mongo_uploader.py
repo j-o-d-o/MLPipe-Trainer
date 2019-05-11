@@ -62,7 +62,7 @@ def upload_data(collection, file_path, data_labels):
 if __name__ == "__main__":
     print("Start uploading")
 
-    Config.add_config('./projects/cifar10/config.ini')
+    Config.add_config('./examples/cifar10/config.ini')
     mongo_con = MongoDBConnect()
     mongo_con.add_connections_from_config(Config.get_config_parser())
     coll_train = mongo_con.get_collection("localhost_mongo_db", "cifar10", "train")

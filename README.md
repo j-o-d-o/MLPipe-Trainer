@@ -50,13 +50,13 @@ Now pycharm will use this conda environment and can access all installed depende
 Export the MLPipe-Trainer root to the python path either with (can also be added to .bashrc):
 ``` bash
 # change path accordingly
->> export PYTHONPATH="/home/USER/projects/MLPipe-Trainer"
+>> export PYTHONPATH="/home/USER/MLPipe-Trainer"
 ```
 To activate the conda environment call:
 ```bash
 conda activate mlpipe_env
 ```
-For an example you can check out the Cifar-10 example in the project folder
+For an example you can check out the Cifar-10 example in the examples folder
 
 <a name="road_map"></a>
 ## Road Map

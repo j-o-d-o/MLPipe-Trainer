@@ -4,14 +4,14 @@ from tensorflow.keras import optimizers
 from mlpipe.data_reader.mongodb import load_ids, MongoDBGenerator
 from mlpipe.utils import MLPipeLogger, Config
 from mlpipe.callbacks import SaveToMongoDB
-from projects.cifar10.processor import PreProcessData
+from examples.cifar10.processor import PreProcessData
 
 
 if __name__ == "__main__":
     MLPipeLogger.init()
 
     try:
-        Config.add_config('./projects/cifar10/config.ini')
+        Config.add_config('./examples/cifar10/config.ini')
         collection_details = ("localhost_mongo_db", "cifar10", "train")
 
         # Create Data Generators

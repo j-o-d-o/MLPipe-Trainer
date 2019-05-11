@@ -10,7 +10,7 @@ import cv2
 
 
 if __name__ == "__main__":
-    Config.add_config('./projects/cifar10/config.ini')
+    Config.add_config('./examples/cifar10/config.ini')
     mongo_con = MongoDBConnect()
     mongo_con.add_connections_from_config(Config.get_config_parser())
     collection = mongo_con.get_collection("localhost_mongo_db", "cifar10", "train")
