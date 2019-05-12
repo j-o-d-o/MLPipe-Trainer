@@ -3,9 +3,10 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras import optimizers
 from mlpipe.data_reader.mongodb import load_ids, MongoDBGenerator
 from mlpipe.utils import MLPipeLogger, Config
-from mlpipe.callbacks import SaveToMongoDB
+from mlpipe.callbacks import SaveToMongoDB, UpdateManager
 from examples.cifar10.processor import PreProcessData
 
+EPOCH_NUMBER = 3
 
 if __name__ == "__main__":
     MLPipeLogger.init()
@@ -18,6 +19,7 @@ if __name__ == "__main__":
         train_data, val_data = load_ids(
             collection_details,
             data_split=(70, 30),
+            limit=1000,
         )
 
         processors = [PreProcessData()]
@@ -56,12 +58,14 @@ if __name__ == "__main__":
         # Save to MongoDB callback
         save_to_mongodb_cb = SaveToMongoDB(("localhost_mongo_db", "models"), "test", model)
 
+        update_manager_cb = UpdateManager("test", model, EPOCH_NUMBER, len(train_gen))
+
         model.fit_generator(
             generator=train_gen,
             validation_data=val_gen,
-            epochs=10,
+            epochs=EPOCH_NUMBER,
             verbose=1,
-            callbacks=[save_to_mongodb_cb],
+            callbacks=[update_manager_cb],
             initial_epoch=0,
         )
 

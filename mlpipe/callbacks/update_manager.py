@@ -1,6 +1,7 @@
 from mlpipe.utils import Config
 from mlpipe.callbacks.fill_training import FillTraining
 from mlpipe.utils.api_endpoints import create_training, update_weights, update_training, test_connection
+from tensorflow.keras.models import Model
 import os
 
 
@@ -10,20 +11,24 @@ class UpdateManager(FillTraining):
     """
     def __init__(
             self,
-            name,
-            keras_model,
+            name: str,
+            keras_model: Model,
+            epochs: int,
+            batches_per_epoch: int,
             save_initial_weights: bool=True,
             epoch_save_condition=None):
         """
         :param name: name of the training as string
         :param keras_model: keras model that should be saved to the training
+        :param epochs: integer of how many epochs the model is trained
+        :param batches_per_epoch: integer on how many batches per epoch are trained
         :param save_initial_weights: boolean to determine if weights should be saved initially before training,
                                      default = True
         :param epoch_save_condition: a function to test if the weights of the model should be saved after the epoch,
                                      the function takes an TrainingSchema as argument. It defaults to None which
                                      will save the weights after each epoch
         """
-        super().__init__(name, keras_model)
+        super().__init__(name, keras_model, epochs, batches_per_epoch)
         self._epoch_save_condition = epoch_save_condition
         self._save_initial_weights = save_initial_weights
         self._training_mongodb_id = None

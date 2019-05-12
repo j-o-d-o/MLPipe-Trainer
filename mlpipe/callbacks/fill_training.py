@@ -11,19 +11,26 @@ class FillTraining(callbacks.Callback):
     def __init__(
             self,
             name: str,
-            keras_model: Model):
+            keras_model: Model,
+            epochs: int = None,
+            batches_per_epoch: int = None):
         """
         :param name: name of the training as string
         :param keras_model: keras model that should be saved to the training
+        :param epochs: integer of how many epochs are trained
+        :param: batches_per_epoch: integer of how many batches per epoch are trained
         """
         self._keras_model = keras_model
         self._training = TrainingSchema(name, keras_model.get_config())
         self._training.result = ResultSchema()
+        self._training.result.max_epochs = epochs
+        self._training.result.max_batches_per_epoch = batches_per_epoch
+        self._training.result.status = -1  # status for setup
         self.id = None
 
     def on_train_begin(self, logs=None):
         self._training.result.update_weights(self._keras_model)
-        self._training.status = 100
+        self._training.status = 100  # status for training
 
     def on_epoch_begin(self, epoch, logs=None):
         self._training.result.curr_epoch = epoch
@@ -41,4 +48,4 @@ class FillTraining(callbacks.Callback):
         self._training.result.update_weights(self._keras_model)
 
     def on_train_end(self, logs=None):
-        self._training.status = 2
+        self._training.status = 1  # status for training done
