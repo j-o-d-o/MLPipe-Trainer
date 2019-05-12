@@ -1,8 +1,10 @@
+<img src="docs/assets/mlpipe_icon_full.png" width="500">
+
 # MLPipe-Trainer
 
 Manage your Data Pipline and Tensorflow & Keras models with MLPipe. It is NOT another "wrapper" around Tensorflow, but rather adds utilities to setup an environment to control data flow and managed trained models (weights & results) with the help of MongoDB.</br>
 
-```
+```bash
 >> pip install mlpipe-trainer
 ```
 
@@ -83,9 +85,8 @@ model.fit_generator(
 `SaveToMongoDB` is a custom keras callback class as described in the [tensorflow docu](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/Callback). Again, feel free to create custom callbacks for any specific needs.</br>
 If, instead of `fit_generator()`, each batch is trained one-by-one e.g. with a native tensorflow model, you can still loop over the generator. Just remember to call the callback methods at the specific steps e.g. `on_batch_end()`.
 
-A full Cifar10 example can be found in the example folder: https://github.com/j-o-d-o/MLPipe-Trainer/tree/master/examples/cifar10
+A full Cifar10 example can be found in the example folder [here](https://github.com/j-o-d-o/MLPipe-Trainer/tree/master/examples/cifar10)
 
-<a name="road_map"></a>
 ## Road Map
 - Create and generat MkDocs documentation & host documentation
 - Add tests
