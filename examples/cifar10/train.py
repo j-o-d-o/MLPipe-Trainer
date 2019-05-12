@@ -58,6 +58,7 @@ if __name__ == "__main__":
         # Save to MongoDB callback
         save_to_mongodb_cb = SaveToMongoDB(("localhost_mongo_db", "models"), "test", model)
 
+        # To update to MLPipe-Manager use this callback
         update_manager_cb = UpdateManager("test", model, EPOCH_NUMBER, len(train_gen))
 
         model.fit_generator(
@@ -65,7 +66,7 @@ if __name__ == "__main__":
             validation_data=val_gen,
             epochs=EPOCH_NUMBER,
             verbose=1,
-            callbacks=[update_manager_cb],
+            callbacks=[save_to_mongodb_cb],
             initial_epoch=0,
         )
 
