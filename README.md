@@ -90,4 +90,4 @@ A full Cifar10 example can be found in the example folder [here](https://github.
 ## Road Map
 - Create and generat MkDocs documentation & host documentation
 - Add tests
-- Redis cache in case data is fetched from remote source
+- Set Up CI

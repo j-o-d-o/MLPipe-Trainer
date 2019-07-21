@@ -1,12 +1,13 @@
 """ Data Generator for MongoDB """
 import math
 import numpy as np
-from typing import List, Tuple, NoReturn
+from typing import List, Tuple
 from random import shuffle
 
-from mlpipe.utils import Config
+from mlpipe.utils import Config, MLPipeLogger
 from mlpipe.data_reader.base_data_generator import BaseDataGenerator
 from mlpipe.data_reader.mongodb import MongoDBConnect
+from mlpipe.data_reader.i_cache import ICache
 
 
 class MongoDBGenerator(BaseDataGenerator):
@@ -15,6 +16,7 @@ class MongoDBGenerator(BaseDataGenerator):
                  doc_ids: List[any] = list(),
                  batch_size: int = 32,
                  processors: List[any] = list(),
+                 cache: ICache = None,
                  shuffle_data: bool = True,
                  shuffle_steps: int = 1):
         """
@@ -23,6 +25,8 @@ class MongoDBGenerator(BaseDataGenerator):
         :param doc_ids: List of doc ids which are used to get the specific data from the MongoDB
         :param batch_size: number of batch size
         :param processors: List of MLPipe data processors
+        :param cache: Passing instance of a cache e.g. RedisCache, if it is None, no caching is used.
+                      Only possible if redis is locally available (not installed with mlpipe)
         :param shuffle_data: bool flag to determine if set should be shuffled after epoch is done
         :param shuffle_steps: number of steps that should be shuffled e.g. if fixed length time series are shuffled
         """
@@ -30,6 +34,7 @@ class MongoDBGenerator(BaseDataGenerator):
 
         super().__init__(batch_size, processors)
         self.doc_ids = doc_ids
+        self.cache = cache
         self.shuffle_data = shuffle_data
         self.shuffle_steps = shuffle_steps
         self.doc_ids = doc_ids
@@ -73,7 +78,20 @@ class MongoDBGenerator(BaseDataGenerator):
             self.collection = self.mongo_con.get_collection(*self.col_details)
 
         batch_ids = self.doc_ids[idx * self.batch_size:(idx + 1) * self.batch_size]
-        docs = self._fetch_data(batch_ids)
+        if self.cache is not None and self.cache.exist(batch_ids):
+            docs = self.cache.get(batch_ids)
+        else:
+            docs = self._fetch_data(batch_ids)
+            if self.cache is not None:
+                # save fetched data to cache
+                for doc in docs:
+                    success = self.cache.set(str(doc["_id"]), doc)
+                    if not success:
+                        MLPipeLogger.logger.warning("Redis cache is full")
+                        break
+                # Create new command cursor since the original one is finished after looping once
+                docs = self._fetch_data(batch_ids)
+
         batch_x, batch_y = self._process_batch(docs)
         return np.asarray(batch_x), np.asarray(batch_y)
 
