@@ -2,19 +2,18 @@ name: mlpipe_env
 dependencies:
   - python=3.6
   - pip
-  # - hdf5==1.10.*
 
   # conda dependencies for dev & examples
-  - redis=5.0.*
   - anaconda-client
   - conda-build
   - pillow
   - pytest
   - numba
-
+  - redis
 
   - pip:
-    - tensorflow==2.0.0-alpha0
+    # pip dependencies that are required by the mlpipe-trainer package
+    - tensorflow==2.0.0-beta1
     - namedlist==1.7
     - h5py==2.9.*
     - numpy==1.16.*
@@ -27,3 +26,4 @@ dependencies:
     - setuptools
     - twine
     - tqdm
+    - redis # this is the python interface for redis

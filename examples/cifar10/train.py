@@ -5,10 +5,14 @@ from mlpipe.data_reader.mongodb import load_ids, MongoDBGenerator
 from mlpipe.utils import MLPipeLogger, Config
 from mlpipe.callbacks import SaveToMongoDB, UpdateManager
 from examples.cifar10.processor import PreProcessData
+from mlpipe.data_reader.redis_cache import RedisCache, RedisConfig
 
 EPOCH_NUMBER = 3
 
+
 if __name__ == "__main__":
+    cache = RedisCache(RedisConfig(maxmemory="10mb"))
+    exit_code = 0
     MLPipeLogger.init()
 
     try:
@@ -26,12 +30,14 @@ if __name__ == "__main__":
         train_gen = MongoDBGenerator(
             collection_details,
             train_data,
+            cache=cache,
             batch_size=128,
             processors=processors
         )
         val_gen = MongoDBGenerator(
             collection_details,
             val_data,
+            cache=cache,
             batch_size=128,
             processors=processors
         )
@@ -72,3 +78,9 @@ if __name__ == "__main__":
 
     except Exception as e:
         MLPipeLogger.logger.exception(e)
+        exit_code = 1
+
+    if cache is not None:
+        cache.clear()
+
+    exit(exit_code)
