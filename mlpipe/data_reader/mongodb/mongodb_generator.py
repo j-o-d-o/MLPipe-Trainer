@@ -18,7 +18,7 @@ class MongoDBGenerator(BaseDataGenerator):
                  processors: List[any] = list(),
                  cache: ICache = None,
                  shuffle_data: bool = True,
-                 shuffle_steps: int = 1):
+                 data_group_size: int = 1):
         """
         :param col_details: MongoDB collection details with a tuple of 3 string entries
                             [client name (from config), database name, collection name]
@@ -28,7 +28,10 @@ class MongoDBGenerator(BaseDataGenerator):
         :param cache: Passing instance of a cache e.g. RedisCache, if it is None, no caching is used.
                       Only possible if redis is locally available (not installed with mlpipe)
         :param shuffle_data: bool flag to determine if set should be shuffled after epoch is done
-        :param shuffle_steps: number of steps that should be shuffled e.g. if fixed length time series are shuffled
+        :param data_group_size: number of steps that should be grouped e.g for time series. The data will still only
+                                move forward one time step. E.g. for data_group_size=3:
+                                [t-5, t-4, t-3], [t-4, t-3, t-2], [t-3, t-2, -1], etc.
+                                data will not be shuffled in case data_group_size > 1
         """
         assert (len(col_details) == 3)
 
@@ -36,8 +39,8 @@ class MongoDBGenerator(BaseDataGenerator):
         self.doc_ids = doc_ids
         self.cache = cache
         self.shuffle_data = shuffle_data
-        self.shuffle_steps = shuffle_steps
-        self.doc_ids = doc_ids
+        self.data_group_size = max(data_group_size, 1)
+        self.docs_per_batch = self.batch_size + (self.data_group_size - 1)
         self.col_details = col_details
         self.collection = None
         self.mongo_con = MongoDBConnect()
@@ -63,7 +66,7 @@ class MongoDBGenerator(BaseDataGenerator):
         """
         :return: Number of batches per epoch
         """
-        return int(math.ceil(len(self.doc_ids) / self.batch_size))
+        return int(math.ceil(len(self.doc_ids) / self.docs_per_batch))
 
     def __getitem__(self, idx):
         """
@@ -77,7 +80,7 @@ class MongoDBGenerator(BaseDataGenerator):
         if self.collection is None:
             self.collection = self.mongo_con.get_collection(*self.col_details)
 
-        batch_ids = self.doc_ids[idx * self.batch_size:(idx + 1) * self.batch_size]
+        batch_ids = self.doc_ids[idx * self.docs_per_batch:(idx + 1) * self.docs_per_batch]
         if self.cache is not None and self.cache.exist(batch_ids):
             docs = self.cache.get(batch_ids)
         else:
@@ -92,17 +95,26 @@ class MongoDBGenerator(BaseDataGenerator):
                 # Create new command cursor since the original one is finished after looping once
                 docs = self._fetch_data(batch_ids)
 
+        if self.data_group_size > 1:
+            # reshape to fit step_size and copy data
+            # since docs is a cursor, save in a temporary list
+            tmp_data = list(docs)
+            docs = []
+            start_idx = 0
+            end_idx = self.data_group_size
+            while end_idx <= len(tmp_data):
+                docs.append(tmp_data[start_idx:end_idx])
+                start_idx += 1
+                end_idx += 1
+
         batch_x, batch_y = self._process_batch(docs)
-        return np.asarray(batch_x), np.asarray(batch_y)
+        input_data = np.asarray(batch_x)
+        ground_truth = np.asarray(batch_y)
+        return input_data, ground_truth
 
     def on_epoch_end(self):
         """
         Called after each epoch
         """
-        if self.shuffle_data:
-            if self.shuffle_steps == 1:
-                shuffle(self.doc_ids)
-            else:
-                x = np.reshape(self.doc_ids, (-1, self.shuffle_steps))
-                np.random.shuffle(x)
-                self.doc_ids = x.flatten().tolist()
+        if self.shuffle_data and self.data_group_size == 1:
+            shuffle(self.doc_ids)
