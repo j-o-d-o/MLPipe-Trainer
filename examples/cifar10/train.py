@@ -58,8 +58,8 @@ if __name__ == "__main__":
         model.add(Dropout(0.5))
         model.add(Dense(10, activation='softmax'))
 
-        opt = optimizers.RMSprop(lr=0.0001, decay=1e-6)
-        model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=["accuracy"])
+        # opt = optimizers.RMSprop(lr=0.0001, decay=1e-6)
+        model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=["accuracy"])
 
         # Save to MongoDB callback
         save_to_mongodb_cb = SaveToMongoDB(("localhost_mongo_db", "models"), "test", model)

@@ -13,7 +13,7 @@ dependencies:
 
   - pip:
     # pip dependencies that are required by the mlpipe-trainer package
-    - tensorflow==2.0.0-beta1
+    - tensorflow==2.0.0
     - namedlist==1.7
     - h5py==2.9.*
     - numpy==1.16.*

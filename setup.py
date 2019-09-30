@@ -19,7 +19,7 @@ setup(
         'h5py>=2.9.0',
         'requests>=2.21.0',
         'namedlist>=1.7',
-        'tensorflow>=2.0.0-alpha0',
+        'tensorflow>=2.0.0',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
