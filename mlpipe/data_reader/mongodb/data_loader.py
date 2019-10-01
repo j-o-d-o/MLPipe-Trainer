@@ -18,9 +18,11 @@ def load_ids(col_details: Tuple[str, str, str], data_split: Tuple = (60, 40), so
     mongo_con.add_connections_from_config(Config.get_config_parser())
     collection = mongo_con.get_collection(*col_details)
 
-    db_cursor = collection.find({}, {"_id": 1})
-    if sort_by is not None:
-        db_cursor.sort(sort_by)
+    if sort_by is None:
+        sort_by = {"_id": 1}
+
+    db_cursor = collection.find({}, sort_by)
+
     if limit:
         db_cursor.limit(limit)
     tmp_docs = []
