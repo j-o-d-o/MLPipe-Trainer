@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='mlpipe-trainer',
-    version='0.4.1',
+    version='0.4.2',
     author="Johannes Dobler",
     author_email="jdobler@protonmail.com",
     description="Manage training results, weights and data flow of your Tensorflow models",
@@ -19,7 +19,7 @@ setup(
         'h5py>=2.9.0',
         'requests>=2.21.0',
         'namedlist>=1.7',
-        'tensorflow>=2.0.0',
+        'tensorflow>=1.14.0',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
