@@ -116,5 +116,10 @@ class MongoDBGenerator(BaseDataGenerator):
         """
         Called after each epoch
         """
-        if self.shuffle_data and self.data_group_size == 1:
-            shuffle(self.doc_ids)
+        if self.shuffle_data:
+            if self.data_group_size == 1:
+                shuffle(self.doc_ids)
+            else:
+                x = np.reshape(self.doc_ids, (-1, self.docs_per_batch))
+                np.random.shuffle(x)
+                self.doc_ids = x.flatten().tolist()
