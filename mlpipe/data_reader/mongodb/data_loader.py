@@ -44,6 +44,9 @@ def load_ids(
         if shuffle_steps == 1:
             shuffle(tmp_docs)
         else:
+            # if reshape the tmp_docs must be a multiple of shuffle_steps, cut ids that do no fit
+            overflow = len(tmp_docs) % shuffle_steps
+            tmp_docs = tmp_docs[:len(tmp_docs) - overflow]
             x = np.reshape(tmp_docs, (-1, shuffle_steps))
             np.random.shuffle(x)
             tmp_docs = x.flatten().tolist()

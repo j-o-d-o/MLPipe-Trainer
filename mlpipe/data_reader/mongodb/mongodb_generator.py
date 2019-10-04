@@ -45,6 +45,11 @@ class MongoDBGenerator(BaseDataGenerator):
         self.collection = None
         self.mongo_con = MongoDBConnect()
         self.mongo_con.add_connections_from_config(Config.get_config_parser())
+        # in case a step_size is chosen > 1, make sure that len(doc_ids) is a multiple of that
+        # otherwise reshape will not be working and throw errors
+        if self.data_group_size > 1:
+            overflow = len(self.doc_ids) % self.docs_per_batch
+            self.doc_ids = self.doc_ids[:len(self.doc_ids) - overflow]
 
     def _fetch_data(self, query_docs: list) -> List[any]:
         """
@@ -120,6 +125,7 @@ class MongoDBGenerator(BaseDataGenerator):
             if self.data_group_size == 1:
                 shuffle(self.doc_ids)
             else:
+                # we made sure that len(self.doc_ids) is a multiple of self.docs_per_batch in the constructor
                 x = np.reshape(self.doc_ids, (-1, self.docs_per_batch))
                 np.random.shuffle(x)
                 self.doc_ids = x.flatten().tolist()
