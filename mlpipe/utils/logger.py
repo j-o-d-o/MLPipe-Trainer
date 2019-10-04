@@ -3,12 +3,12 @@ import io
 import os
 import sys
 import re
+import tensorflow as tf
 
 
 class MLPipeLogger:
     """Manage logging of MLPipe"""
     _logger_level = logging.DEBUG
-    _logger_name = 'MLPipe.logger'
     _formatter = logging.Formatter('[%(asctime)s] %(levelname)-10s %(message)s')
     _log_contents = io.StringIO()
     _current_log_file_path = "mlpipe.log"
@@ -29,7 +29,9 @@ class MLPipeLogger:
                 MLPipeLogger.logger.removeHandler(hdlr)
 
         # Create the logger
-        MLPipeLogger.logger = logging.getLogger(MLPipeLogger._logger_name)
+        MLPipeLogger.logger = tf.get_logger()
+        for hdlr in MLPipeLogger.logger.handlers:
+            MLPipeLogger.logger.removeHandler(hdlr)
         MLPipeLogger.logger.setLevel(MLPipeLogger._logger_level)
         MLPipeLogger.logger.propagate = False  # otherwise tensorflow duplicates each mlpipe logging to the console
 

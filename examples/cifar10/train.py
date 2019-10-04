@@ -1,6 +1,5 @@
 from tensorflow.keras.layers import Conv2D, Dense, Dropout, MaxPooling2D, Flatten
 from tensorflow.keras.models import Sequential
-from tensorflow.keras import optimizers
 from mlpipe.data_reader.mongodb import load_ids, MongoDBGenerator
 from mlpipe.utils import MLPipeLogger, Config
 from mlpipe.callbacks import SaveToMongoDB, UpdateManager
@@ -58,7 +57,6 @@ if __name__ == "__main__":
         model.add(Dropout(0.5))
         model.add(Dense(10, activation='softmax'))
 
-        # opt = optimizers.RMSprop(lr=0.0001, decay=1e-6)
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=["accuracy"])
 
         # Save to MongoDB callback
@@ -72,7 +70,9 @@ if __name__ == "__main__":
             validation_data=val_gen,
             epochs=EPOCH_NUMBER,
             verbose=1,
-            callbacks=[save_to_mongodb_cb],
+            callbacks=[
+                save_to_mongodb_cb
+            ],
             initial_epoch=0,
         )
 
