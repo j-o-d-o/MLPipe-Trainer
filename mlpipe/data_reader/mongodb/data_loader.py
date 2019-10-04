@@ -1,16 +1,27 @@
-from mlpipe.utils import MLPipeLogger, Config
 from typing import Tuple
+from random import shuffle
+import numpy as np
+from mlpipe.utils import MLPipeLogger, Config
 from mlpipe.data_reader.mongodb import MongoDBConnect
 
 
-def load_ids(col_details: Tuple[str, str, str], data_split: Tuple = (60, 40), sort_by: dict = None, limit: int = None):
+def load_ids(
+        col_details: Tuple[str, str, str],
+        data_split: Tuple = (60, 40),
+        sort_by: dict = None,
+        limit: int = None,
+        shuffle_data: bool = False,
+        shuffle_steps: int = 1):
     """
     Load MongoDB Document Ids from a collection and split them in training and validation data set
     :param col_details: MongoDB collection details with a tuple of 3 string entries
                         [client name (from config), database name, collection name]
     :param data_split: Tuple of percentage of training and test data e.g. (60, 40) for 60% training and 40% test data
-    :param sort_by: MongoDB sort expressiong. e.g. { created_at: -1 }
+    :param sort_by: MongoDB sort expression. e.g. { created_at: -1 }
     :param limit: maximum number of ids that should be fetched
+    :param shuffle_data: determine if dataset should be shuffled before splitting it to train and validation data
+    :param shuffle_steps: step size for the shuffling (e.g. for time series you want to have a shuffle_size of
+                          BATCH_SIZE + (TIME_STEPS - 1)
     :return: training and validation data
     """
     MLPipeLogger.logger.info("Loading Document IDs from MongoDB")
@@ -28,6 +39,14 @@ def load_ids(col_details: Tuple[str, str, str], data_split: Tuple = (60, 40), so
     tmp_docs = []
     for doc in db_cursor:
         tmp_docs.append(doc["_id"])
+
+    if shuffle_data:
+        if shuffle_steps == 1:
+            shuffle(tmp_docs)
+        else:
+            x = np.reshape(tmp_docs, (-1, shuffle_steps))
+            np.random.shuffle(x)
+            tmp_docs = x.flatten().tolist()
 
     train_range = int((data_split[0] / 100) * len(tmp_docs))
     train_data = tmp_docs[:train_range]
