@@ -113,7 +113,22 @@ class MongoDBGenerator(BaseDataGenerator):
                 end_idx += 1
 
         batch_x, batch_y = self._process_batch(docs)
-        input_data = np.asarray(batch_x)
+        input_data = []
+        if len(batch_x) > 0:
+            if isinstance(batch_x[0], dict):
+                # multiple inputs, split them up by name
+                input_data = {}
+                for key in batch_x[0]:
+                    input_data[key] = []
+                # fill dict with data for each key
+                for batch in batch_x:
+                    for key in batch:
+                        input_data[key].append(batch[key])
+                # make all of them numpy arrays
+                for key in input_data:
+                    input_data[key] = np.asarray(input_data[key])
+            else:
+                input_data = np.asarray(batch_x)
         ground_truth = np.asarray(batch_y)
         return input_data, ground_truth
 
