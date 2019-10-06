@@ -16,6 +16,7 @@ class UpdateManager(FillTraining):
             epochs: int,
             batches_per_epoch: int,
             save_initial_weights: bool=True,
+            update_frequency: int=1,
             epoch_save_condition=None):
         """
         :param name: name of the training as string
@@ -24,6 +25,9 @@ class UpdateManager(FillTraining):
         :param batches_per_epoch: integer on how many batches per epoch are trained
         :param save_initial_weights: boolean to determine if weights should be saved initially before training,
                                      default = True
+        :param update_frequency: defines how often data is sent to the server. In case there are many many batches
+                                 it is wise to increase this number. It still sends all info to the server, just
+                                 not every single batch.
         :param epoch_save_condition: a function to test if the weights of the model should be saved after the epoch,
                                      the function takes an TrainingSchema as argument. It defaults to None which
                                      will save the weights after each epoch
@@ -31,6 +35,7 @@ class UpdateManager(FillTraining):
         super().__init__(name, keras_model, epochs, batches_per_epoch)
         self._epoch_save_condition = epoch_save_condition
         self._save_initial_weights = save_initial_weights
+        self._update_frequency = update_frequency
         self._training_mongodb_id = None
 
     def _create_training(self):
@@ -54,7 +59,8 @@ class UpdateManager(FillTraining):
 
     def on_batch_end(self, batch, logs=None):
         super().on_batch_end(batch, logs)
-        if self._training_mongodb_id is not None:
+        should_update = (batch % self._update_frequency) == 0
+        if self._training_mongodb_id is not None and should_update:
             self._handle_response(update_training(self._training_mongodb_id, self._training))
 
     def on_epoch_end(self, epoch, logs=None):
