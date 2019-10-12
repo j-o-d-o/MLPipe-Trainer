@@ -123,13 +123,24 @@ class MongoDBGenerator(BaseDataGenerator):
                 # fill dict with data for each key
                 for batch in batch_x:
                     for key in batch:
-                        input_data[key].append(batch[key])
-                # make all of them numpy arrays
-                for key in input_data:
-                    input_data[key] = np.asarray(input_data[key])
+                        input_data[key].append(np.asarray(batch[key]))
             else:
                 input_data = np.asarray(batch_x)
-        ground_truth = np.asarray(batch_y)
+
+        ground_truth = []
+        if len(batch_y) > 0:
+            if isinstance(batch_y[0], dict):
+                # multiple inputs, split them up by name
+                ground_truth = {}
+                for key in batch_y[0]:
+                    ground_truth[key] = []
+                # fill dict with data for each key
+                for batch in batch_y:
+                    for key in batch:
+                        ground_truth[key].append(np.asarray(batch[key]))
+            else:
+                ground_truth = np.asarray(batch_y)
+
         return input_data, ground_truth
 
     def on_epoch_end(self):
