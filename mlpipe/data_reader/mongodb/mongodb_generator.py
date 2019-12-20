@@ -18,7 +18,8 @@ class MongoDBGenerator(BaseDataGenerator):
                  processors: List[any] = list(),
                  cache: ICache = None,
                  shuffle_data: bool = True,
-                 data_group_size: int = 1):
+                 data_group_size: int = 1,
+                 fix_batch_size: bool = False):
         """
         :param col_details: MongoDB collection details with a tuple of 3 string entries
                             [client name (from config), database name, collection name]
@@ -32,6 +33,9 @@ class MongoDBGenerator(BaseDataGenerator):
                                 move forward one time step. E.g. for data_group_size=3:
                                 [t-5, t-4, t-3], [t-4, t-3, t-2], [t-3, t-2, -1], etc.
                                 data will not be shuffled in case data_group_size > 1
+        :param fix_batch_size: if true batch size will always be the same, e.g. if batch_size=64 and there are only 63
+                               datasamples left for the final batch, these 63 data points will be ignored. In case the
+                               batch size of your model is fixed, set this to True.
         """
         assert (len(col_details) == 3)
 
@@ -42,6 +46,7 @@ class MongoDBGenerator(BaseDataGenerator):
         self.data_group_size = max(data_group_size, 1)
         self.docs_per_batch = self.batch_size + (self.data_group_size - 1)
         self.col_details = col_details
+        self.fix_batch_size = fix_batch_size
         self.collection = None
         self.mongo_con = MongoDBConnect()
         self.mongo_con.add_connections_from_config(Config.get_config_parser())
@@ -71,7 +76,11 @@ class MongoDBGenerator(BaseDataGenerator):
         """
         :return: Number of batches per epoch
         """
-        return int(math.ceil(len(self.doc_ids) / self.docs_per_batch))
+        if self.fix_batch_size:
+            num_batches = int(math.floor(len(self.doc_ids) / self.docs_per_batch))
+        else:
+            num_batches = int(math.ceil(len(self.doc_ids) / self.docs_per_batch))
+        return num_batches
 
     def __getitem__(self, idx):
         """
