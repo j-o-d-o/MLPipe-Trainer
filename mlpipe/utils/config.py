@@ -19,8 +19,6 @@ class Config:
         if not len(cp.read(config_path)) == 0:
             if 'api_manager' in cp:
                 Config._api_manager = cp['api_manager']
-            else:
-                raise ValueError("Config file is missing an 'api_manager' section")
         else:
             raise ValueError("Config file not found for path: " + config_path)
 
@@ -29,11 +27,14 @@ class Config:
         """
         :return: return API url from config as string
         """
-        api_url = Config._api_manager["url"]
-        # if the url is missing a trailing /, add it. That way the url format is consistent
-        if api_url[-1] != "/":
-            api_url += "/"
-        return api_url
+        if "url" in Config._api_manager:
+            api_url = Config._api_manager["url"]
+            # if the url is missing a trailing /, add it. That way the url format is consistent
+            if api_url[-1] != "/":
+                api_url += "/"
+            return api_url
+        else:
+          return None
 
     @staticmethod
     def get_job_token():
